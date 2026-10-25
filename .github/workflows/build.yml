@@ -18,24 +18,14 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
         
-    # 让云端自动准备一套 Gradle 环境
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
-      
-    - name: Build
+    - name: Build with Gradlew
       run: |
         cd WBHub
-        # 如果有 gradlew 就用，没有就直接用系统安装的 gradle
-        if [ -f "gradlew" ]; then
-          echo "检测到 gradlew，使用项目自带脚本..."
-          chmod +x gradlew
-          ./gradlew :app:assembleDebug --stacktrace
-        else
-          echo "未找到 gradlew，直接使用云端 Gradle 构建..."
-          gradle :app:assembleDebug --stacktrace
-        fi
+        # 因为你包里已经有 gradlew 了，直接赋权并运行
+        chmod +x gradlew
+        ./gradlew :app:assembleDebug --stacktrace
         
     - uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: "**/app/build/outputs/apk/debug/app-debug.apk"
+        path: "**/build/outputs/apk/debug/*.apk"
